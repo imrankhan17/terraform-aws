@@ -60,3 +60,7 @@ resource "aws_instance" "web" {
     Name = "web"
   }
 }
+
+output "ip" {
+  value = aws_instance.web.public_dns
+}
