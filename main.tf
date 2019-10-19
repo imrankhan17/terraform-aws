@@ -27,8 +27,17 @@ resource "aws_security_group" "ssh_web" {
   }
 }
 
+data "aws_ami" "ubuntu" {
+  owners = ["099720109477"]
+  most_recent = true
+  filter {
+    name = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+  }
+}
+
 resource "aws_instance" "web" {
-  ami = "ami-0be057a22c63962cb"
+  ami = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
   key_name = "my_key"
   security_groups = [aws_security_group.ssh_web.name]
