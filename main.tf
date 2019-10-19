@@ -61,6 +61,22 @@ resource "aws_instance" "web" {
   }
 }
 
-output "ip" {
-  value = aws_instance.web.public_dns
+resource "aws_route53_zone" "primary" {
+  name = var.domain
+}
+
+resource "aws_route53_record" "www" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name = "www.${aws_route53_zone.primary.name}"
+  type = "A"
+  ttl = 300
+  records = [aws_instance.web.public_ip]
+}
+
+resource "aws_route53_record" "blank" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name = aws_route53_zone.primary.name
+  type = "A"
+  ttl = 300
+  records = [aws_instance.web.public_ip]
 }
