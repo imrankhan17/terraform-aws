@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "eu-west-2"
+  region = var.region
 }
 
 resource "aws_security_group" "ssh_web" {
@@ -29,7 +29,7 @@ resource "aws_security_group" "ssh_web" {
 
 resource "aws_key_pair" "key" {
   key_name   = "tf_key"
-  public_key = file("~/.ssh/id_rsa.pub")
+  public_key = file(var.public_key)
 }
 
 data "aws_ami" "ubuntu" {
@@ -51,7 +51,7 @@ resource "aws_instance" "web" {
     type        = "ssh"
     user        = "ubuntu"
     host        = self.public_ip
-    private_key = file("~/.ssh/id_rsa")
+    private_key = file(var.private_key)
   }
 
   provisioner "remote-exec" {
