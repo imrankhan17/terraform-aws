@@ -1,4 +1,4 @@
 variable "domain" {
-  type = string
+  type        = string
   description = "Name of domain."
 }
