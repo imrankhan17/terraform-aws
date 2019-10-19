@@ -27,6 +27,11 @@ resource "aws_security_group" "ssh_web" {
   }
 }
 
+resource "aws_key_pair" "key" {
+  key_name   = "tf_key"
+  public_key = file("~/.ssh/id_rsa.pub")
+}
+
 data "aws_ami" "ubuntu" {
   owners      = ["099720109477"]
   most_recent = true
@@ -39,17 +44,17 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "web" {
   ami             = data.aws_ami.ubuntu.id
   instance_type   = "t2.micro"
-  key_name        = "my_key"
+  key_name        = aws_key_pair.key.key_name
   security_groups = [aws_security_group.ssh_web.name]
 
-  provisioner "remote-exec" {
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      host        = aws_instance.web.public_ip
-      private_key = file("~/.ssh/my_key.pem")
-    }
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    host        = self.public_ip
+    private_key = file("~/.ssh/id_rsa")
+  }
 
+  provisioner "remote-exec" {
     inline = [
       "sudo apt update -y",
       "sudo apt install nginx -y"
