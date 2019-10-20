@@ -4,3 +4,4 @@
 # Terraform
 .terraform
 terraform.tfstate*
+*.svg
