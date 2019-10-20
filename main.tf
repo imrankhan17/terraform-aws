@@ -57,12 +57,9 @@ resource "aws_instance" "web" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt update -y",
-      "sudo apt install nginx -y"
+      "sudo apt install nginx -y",
+      "sudo bash -c 'echo Welcome to ${var.domain} > /var/www/html/index.html'"
     ]
-  }
-
-  tags = {
-    Name = "web"
   }
 }
 
